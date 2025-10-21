@@ -2,6 +2,7 @@ package filter
 
 import (
 	"bufio"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -84,6 +85,31 @@ type FilterList struct {
 	URL     string         `json:"url"`
 	Enabled bool           `json:"enabled"`
 	Trusted bool           `json:"trusted"`
+	Locales []string       `json:"locales"`
+}
+
+func (f *FilterList) UnmarshalJSON(data []byte) error {
+	type TempFilterList FilterList
+	var temp TempFilterList
+
+	if err := json.Unmarshal(data, &temp); err != nil {
+		return err
+	}
+
+	if temp.Name == "" {
+		return errors.New("name is required")
+	}
+
+	if temp.URL == "" {
+		return errors.New("URL is required")
+	}
+
+	if temp.Type == "" {
+		return errors.New("type is required")
+	}
+
+	*f = FilterList(temp)
+	return nil
 }
 
 // Filter is capable of parsing Adblock-style filter lists and hosts rules and matching URLs against them.

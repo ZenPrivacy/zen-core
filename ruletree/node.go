@@ -154,5 +154,5 @@ func init() {
 }
 
 func isSeparator(char byte) bool {
-	return separators[int(char)]
+	return separators[char]
 }

@@ -1,6 +1,6 @@
 module github.com/ZenPrivacy/zen-core
 
-go 1.24.5
+go 1.25.3
 
 require (
 	github.com/andybalholm/brotli v1.2.0
