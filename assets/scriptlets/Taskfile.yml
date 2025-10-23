@@ -1,0 +1,35 @@
+version: '3'
+
+tasks:
+  build:
+    desc: Builds the bundle and copies it to the scriptlets directory.
+    dir: assets/scriptlets
+    cmds:
+      - npm run build
+      - cp dist/bundle.js ../../scriptlet
+      - du -sh ../../scriptlet/bundle.js
+      - echo -n "" >> ../main.go
+
+  lint:
+    desc: Lints the code.
+    dir: assets/scriptlets
+    cmds:
+      - npm run lint
+
+  test:
+    desc: Tests the code.
+    dir: assets/scriptlets
+    cmds:
+      - npm run test
+
+  install:
+    desc: Installs the complete set of dependencies.
+    dir: assets/scriptlets
+    cmds:
+      - npm ci
+
+  install-prod:
+    desc: Installs the dependencies required to build the bundle.
+    dir: assets/scriptlets
+    cmds:
+      - npm ci --only=prod
