@@ -1,8 +1,8 @@
 version: '3'
 
 includes:
-  scriptlets: assets/scriptlets/Taskfile.yml
-  extended-css: assets/extended-css/Taskfile.yml
+  scriptlets: jslibs/scriptlets/Taskfile.yml
+  extended-css: jslibs/extended-css/Taskfile.yml
 
 tasks:
   test-go:
