@@ -1,0 +1,39 @@
+version: '3'
+
+includes:
+  scriptlets: jslibs/scriptlets/Taskfile.yml
+  extended-css: jslibs/extended-css/Taskfile.yml
+
+tasks:
+  test-go:
+    desc: Run Go tests.
+    cmds:
+      - go test -cover -race ./...
+
+  test:
+    desc: Run Go, scriptlets, and extended-css tests.
+    cmds:
+      - task: scriptlets:test
+      - task: extended-css:test
+      - task: test-go
+      - cmd: echo "Tests passed"
+        silent: true
+
+  lint:
+    desc: Run frontend, scriptlets, extended-css, and Go linters.
+    cmds:
+      - task: scriptlets:lint
+      - task: extended-css:lint
+      - task: lint-go
+      - cmd: echo "Checks passed"
+        silent: true
+
+  lint-go:
+    desc: Run Go linters.
+    cmds:
+      - golangci-lint run
+
+  fmt-go:
+    desc: Run go fmt on improperly formatted Go files.
+    cmds:
+      - golangci-lint fmt
