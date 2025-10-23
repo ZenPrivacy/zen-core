@@ -2,33 +2,33 @@ version: '3'
 
 tasks:
   build:
-    desc: Builds the bundle and copies it to the scriptlets directory.
-    dir: assets/scriptlets
+    desc: Builds the bundle and copies it to the extendedcss directory.
+    dir: assets/extended-css
     cmds:
       - npm run build
-      - cp dist/bundle.js ../../scriptlet
-      - du -sh ../../scriptlet/bundle.js
+      - cp dist/bundle.js ../../extendedcss
+      - du -sh ../../extendedcss/bundle.js
 
   lint:
     desc: Lints the code.
-    dir: assets/scriptlets
+    dir: assets/extended-css
     cmds:
       - npm run lint
 
   test:
     desc: Tests the code.
-    dir: assets/scriptlets
+    dir: assets/extended-css
     cmds:
       - npm run test
 
   install:
     desc: Installs the complete set of dependencies.
-    dir: assets/scriptlets
+    dir: assets/extended-css
     cmds:
       - npm ci
 
   install-prod:
     desc: Installs the dependencies required to build the bundle.
-    dir: assets/scriptlets
+    dir: assets/extended-css
     cmds:
       - npm ci --only=prod
