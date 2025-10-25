@@ -14,8 +14,8 @@ permissions:
   checks: write
 
 jobs:
-  test:
-    name: Test (${{ matrix.os }})
+  test-go:
+    name: Test Go (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -29,21 +29,45 @@ jobs:
           go-version-file: ./go.mod
       - name: Run go version
         run: go version
+      - name: Run tests
+        run: go test -cover -race ./...
+
+  test-extended-css:
+    name: Test jslibs/extended-css
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-      - run: node --version
-      - name: Install scriptlets npm packages
-        run: npm ci
-        working-directory: jsibs/scriptlets
-      - name: Install extended-css npm packages
+          node-version-file: jslibs/extended-css/package.json
+          cache: 'npm'
+          cache-dependency-path: jslibs/extended-css/package-lock.json
+      - name: Run node --version
+        run: node --version
+      - name: Install frontend dependencies
         run: npm ci
         working-directory: jslibs/extended-css
-      - name: Set up Task
-        uses: arduino/setup-task@v1
+      - name: Run frontend tests
+        run: npm run test
+        working-directory: jslibs/extended-css
+
+  test-scriptlets:
+    name: Test jslibs/scriptlets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
-          version: 3.x
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Run tests
-        run: task test
+          node-version-file: jslibs/scriptlets/package.json
+          cache: 'npm'
+          cache-dependency-path: jslibs/scriptlets/package-lock.json
+      - name: Run node --version
+        run: node --version
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: jslibs/scriptlets
+      - name: Run frontend tests
+        run: npm run test
+        working-directory: jslibs/scriptlets
