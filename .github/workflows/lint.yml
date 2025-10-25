@@ -1,0 +1,76 @@
+name: Lint
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  # These permissions are required by golangci-lint to create annotations for PRs.
+  # https://github.com/golangci/golangci-lint-action?tab=readme-ov-file
+  contents: read
+  pull-requests: read
+  checks: write
+
+jobs:
+  lint-go:
+    name: Lint Go (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: ./go.mod
+      - name: Run go version
+        run: go version
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v7
+      - name: Run govulncheck
+        uses: golang/govulncheck-action@v1
+
+  lint-extended-css:
+    name: Lint jslibs/extended-css
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: jslibs/extended-css/package.json
+          cache: 'npm'
+          cache-dependency-path: jslibs/extended-css/package-lock.json
+      - name: Run node --version
+        run: node --version
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: jslibs/extended-css
+      - name: Run frontend linter
+        run: npm run lint
+        working-directory: jslibs/extended-css
+
+  lint-scriptlets:
+    name: Lint jslibs/scriptlets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: jslibs/scriptlets/package.json
+          cache: 'npm'
+          cache-dependency-path: jslibs/scriptlets/package-lock.json
+      - name: Run node --version
+        run: node --version
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: jslibs/scriptlets
+      - name: Run frontend linter
+        run: npm run lint
+        working-directory: jslibs/scriptlets
