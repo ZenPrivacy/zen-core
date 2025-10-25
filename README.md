@@ -6,7 +6,7 @@
 <img alt="Discord" src="https://img.shields.io/discord/1334633399490711685?logo=discord&logoColor=fff&label=Discord&color=5865F2"/>
 </a>
 
-`zen-core` is a Go library that includes packages powering ad-blocking and other shared foundational functionality in Zen products.
+`zen-core` is a Go and JS/TS library that includes packages powering ad-blocking and other shared foundational functionality in Zen products.
 
 ## License
 
