@@ -1,0 +1,73 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - v*
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  test-go:
+    name: Test Go (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: ./go.mod
+      - name: Run go version
+        run: go version
+      - name: Run tests
+        run: go test -cover -race ./...
+
+  test-extended-css:
+    name: Test jslibs/extended-css
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: jslibs/extended-css/package.json
+          cache: 'npm'
+          cache-dependency-path: jslibs/extended-css/package-lock.json
+      - name: Run node --version
+        run: node --version
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: jslibs/extended-css
+      - name: Run frontend tests
+        run: npm run test
+        working-directory: jslibs/extended-css
+
+  test-scriptlets:
+    name: Test jslibs/scriptlets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: jslibs/scriptlets/package.json
+          cache: 'npm'
+          cache-dependency-path: jslibs/scriptlets/package-lock.json
+      - name: Run node --version
+        run: node --version
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: jslibs/scriptlets
+      - name: Run frontend tests
+        run: npm run test
+        working-directory: jslibs/scriptlets
