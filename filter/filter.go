@@ -76,7 +76,7 @@ type whitelistSrv interface {
 type ListType string
 
 const (
-	FilterListTypeCustom ListType = "custom"
+	ListTypeCustom ListType = "custom"
 )
 
 type List struct {
