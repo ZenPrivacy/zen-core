@@ -36,7 +36,7 @@ func detectDesktopEnvironment() string {
 }
 
 func setSystemProxy(pacURL string) error {
-	desktop := "gnome"
+	desktop := detectDesktopEnvironment()
 
 	// TODO: add support for other desktop environments
 	switch desktop {
@@ -105,7 +105,7 @@ func setGnomeProxy(pacURL string) error {
 }
 
 func unsetSystemProxy() error {
-	desktop := "gnome"
+	desktop := detectDesktopEnvironment()
 	switch desktop {
 	case "kde":
 		if err := unsetKDEProxy(); err != nil {
