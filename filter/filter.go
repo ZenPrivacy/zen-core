@@ -73,23 +73,23 @@ type whitelistSrv interface {
 	GetPort() int
 }
 
-type FilterListType string
+type ListType string
 
 const (
-	FilterListTypeCustom FilterListType = "custom"
+	ListTypeCustom ListType = "custom"
 )
 
-type FilterList struct {
-	Name    string         `json:"name"`
-	Type    FilterListType `json:"type"`
-	URL     string         `json:"url"`
-	Enabled bool           `json:"enabled"`
-	Trusted bool           `json:"trusted"`
-	Locales []string       `json:"locales"`
+type List struct {
+	Name    string   `json:"name"`
+	Type    ListType `json:"type"`
+	URL     string   `json:"url"`
+	Enabled bool     `json:"enabled"`
+	Trusted bool     `json:"trusted"`
+	Locales []string `json:"locales"`
 }
 
-func (f *FilterList) UnmarshalJSON(data []byte) error {
-	type TempFilterList FilterList
+func (f *List) UnmarshalJSON(data []byte) error {
+	type TempFilterList List
 	var temp TempFilterList
 
 	if err := json.Unmarshal(data, &temp); err != nil {
@@ -108,7 +108,7 @@ func (f *FilterList) UnmarshalJSON(data []byte) error {
 		return errors.New("type is required")
 	}
 
-	*f = FilterList(temp)
+	*f = List(temp)
 	return nil
 }
 
@@ -126,7 +126,7 @@ type Filter struct {
 	filterListStore       filterListStore
 	whitelistSrv          whitelistSrv
 
-	filterLists []FilterList
+	filterLists []List
 	myRules     []string
 }
 
@@ -136,7 +136,7 @@ var (
 )
 
 // NewFilter creates and initializes a new filter.
-func NewFilter(networkRules networkRules, scriptletsInjector scriptletsInjector, cosmeticRulesInjector cosmeticRulesInjector, cssRulesInjector cssRulesInjector, jsRuleInjector jsRuleInjector, extendedCSSInjector extendedCSSInjector, eventsEmitter filterEventsEmitter, filterListStore filterListStore, whitelistSrv whitelistSrv, filterLists []FilterList, myRules []string) (*Filter, error) {
+func NewFilter(networkRules networkRules, scriptletsInjector scriptletsInjector, cosmeticRulesInjector cosmeticRulesInjector, cssRulesInjector cssRulesInjector, jsRuleInjector jsRuleInjector, extendedCSSInjector extendedCSSInjector, eventsEmitter filterEventsEmitter, filterListStore filterListStore, whitelistSrv whitelistSrv, filterLists []List, myRules []string) (*Filter, error) {
 	if eventsEmitter == nil {
 		return nil, errors.New("eventsEmitter is nil")
 	}
@@ -197,7 +197,7 @@ func (f *Filter) init() {
 			continue
 		}
 		wg.Add(1)
-		go func(filterList FilterList) {
+		go func(filterList List) {
 			defer wg.Done()
 
 			contents, err := f.filterListStore.Get(filterList.URL)
