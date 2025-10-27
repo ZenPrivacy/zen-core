@@ -198,6 +198,9 @@ func splitModifiersEscaped(modifiers string) []string {
 	for _, c := range modifiers {
 		switch c {
 		case '\\':
+			if escaped {
+				current += "\\"
+			}
 			escaped = !escaped
 			continue
 		case ',':
@@ -209,6 +212,9 @@ func splitModifiersEscaped(modifiers string) []string {
 			res = append(res, current)
 			current = ""
 		default:
+			if escaped {
+				current += "\\"
+			}
 			current += string(c)
 			escaped = false
 		}
