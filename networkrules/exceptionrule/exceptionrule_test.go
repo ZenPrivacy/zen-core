@@ -23,7 +23,7 @@ func TestExceptionRule(t *testing.T) {
 			RawRule:    "||example.com$document",
 			FilterName: &filterName,
 		}
-		r.ParseModifiers("document")
+		r.ParseModifiers([]string{"document"})
 
 		want := true
 		if got := er.Cancels(r); got != want {
@@ -44,8 +44,8 @@ func TestExceptionRule(t *testing.T) {
 			RawRule:    "||example.com$document",
 			FilterName: &filterName,
 		}
-		r.ParseModifiers("document")
-		er.ParseModifiers("document")
+		r.ParseModifiers([]string{"document"})
+		er.ParseModifiers([]string{"document"})
 
 		want := true
 		if got := er.Cancels(r); got != want {
@@ -66,7 +66,7 @@ func TestExceptionRule(t *testing.T) {
 			RawRule:    "||example.com",
 			FilterName: &filterName,
 		}
-		er.ParseModifiers("document")
+		er.ParseModifiers([]string{"document"})
 
 		want := false
 		if got := er.Cancels(r); got != want {

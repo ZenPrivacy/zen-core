@@ -76,7 +76,8 @@ func (nr *NetworkRules) ParseRule(rawRule string, filterName *string) (isExcepti
 			return true, nil
 		}
 		if found {
-			if err := r.ParseModifiers(modifiers); err != nil {
+			modifiersArr := splitModifiers(modifiers)
+			if err := r.ParseModifiers(modifiersArr); err != nil {
 				return false, fmt.Errorf("parse modifiers: %v", err)
 			}
 		}
@@ -97,7 +98,8 @@ func (nr *NetworkRules) ParseRule(rawRule string, filterName *string) (isExcepti
 		return false, nil
 	}
 	if found {
-		if err := r.ParseModifiers(modifiers); err != nil {
+		modifiersArr := splitModifiers(modifiers)
+		if err := r.ParseModifiers(modifiersArr); err != nil {
 			return false, fmt.Errorf("parse modifiers: %v", err)
 		}
 	}
@@ -209,4 +211,42 @@ func renderURLWithoutPort(u *url.URL) string {
 	}
 
 	return stripped.String()
+}
+
+// splitModifiers splits by unescaped commas.
+// Empty fields are preserved (like strings.Split).
+func splitModifiers(s string) []string {
+	var res []string
+	var b strings.Builder
+	escaped := false
+
+	for _, r := range s {
+		switch r {
+		case '\\':
+			if escaped {
+				b.WriteRune('\\')
+			}
+			escaped = !escaped
+		case ',':
+			if escaped {
+				b.WriteRune(',')
+				escaped = false
+			} else {
+				res = append(res, b.String())
+				b.Reset()
+			}
+		default:
+			if escaped {
+				b.WriteRune('\\')
+				escaped = false
+			}
+			b.WriteRune(r)
+		}
+	}
+
+	if escaped {
+		b.WriteRune('\\')
+	}
+	res = append(res, b.String())
+	return res
 }
