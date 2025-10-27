@@ -1,6 +1,7 @@
 package rule
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -31,14 +32,10 @@ type matchingModifiers struct {
 	OrModifiers []rulemodifiers.MatchingModifier
 }
 
-func (rm *Rule) ParseModifiers(modifiers string) error {
-	if len(modifiers) == 0 {
-		return nil
-	}
-
-	for _, m := range splitModifiersEscaped(modifiers) {
+func (rm *Rule) ParseModifiers(modifiers []string) error {
+	for _, m := range modifiers {
 		if len(m) == 0 {
-			return fmt.Errorf("empty modifier")
+			return errors.New("empty modifier")
 		}
 
 		isKind := func(kind string) bool {
@@ -189,38 +186,4 @@ func (rm *Rule) ModifyRes(res *http.Response) (modified bool, err error) {
 	}
 
 	return modified, nil
-}
-
-func splitModifiersEscaped(modifiers string) []string {
-	var res []string
-	var current string
-	var escaped bool
-	for _, c := range modifiers {
-		switch c {
-		case '\\':
-			if escaped {
-				current += "\\"
-			}
-			escaped = !escaped
-			continue
-		case ',':
-			if escaped {
-				current += string(c)
-				escaped = false
-				continue
-			}
-			res = append(res, current)
-			current = ""
-		default:
-			if escaped {
-				current += "\\"
-			}
-			current += string(c)
-			escaped = false
-		}
-	}
-	if len(current) > 0 {
-		res = append(res, current)
-	}
-	return res
 }

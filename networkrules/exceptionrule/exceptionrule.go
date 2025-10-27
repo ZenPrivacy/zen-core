@@ -1,6 +1,7 @@
 package exceptionrule
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -85,14 +86,10 @@ func (er *ExceptionRule) Cancels(r *rule.Rule) bool {
 	return true
 }
 
-func (er *ExceptionRule) ParseModifiers(modifiers string) error {
-	if len(modifiers) == 0 {
-		return nil
-	}
-
-	for _, m := range strings.Split(modifiers, ",") {
+func (er *ExceptionRule) ParseModifiers(modifiers []string) error {
+	for _, m := range modifiers {
 		if len(m) == 0 {
-			return fmt.Errorf("empty modifier")
+			return errors.New("empty modifier")
 		}
 
 		isKind := func(kind string) bool {
