@@ -164,12 +164,6 @@ func NewFilter(networkRules networkRules, scriptletsInjector scriptletsInjector,
 	if whitelistSrv == nil {
 		return nil, errors.New("whitelistSrv is nil")
 	}
-	if filterLists == nil {
-		return nil, errors.New("filterLists is nil")
-	}
-	if myRules == nil {
-		return nil, errors.New("myRules is nil")
-	}
 
 	f := &Filter{
 		networkRules:          networkRules,
